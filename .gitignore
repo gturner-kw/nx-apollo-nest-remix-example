@@ -1,7 +1,7 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-/dist
+dist
 /tmp
 /out-tsc
 
@@ -24,16 +24,32 @@ node_modules
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/libpeerconnection.log
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
 # misc
 /.sass-cache
 /connect.lock
 /coverage
-/libpeerconnection.log
-npm-debug.log
-yarn-error.log
-testem.log
 /typings
 
 # System Files
 .DS_Store
 Thumbs.db
+
+# Remix files
+apps/**/build
+apps/**/public/build
+apps/**/.cache

@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "npmScope": "nx-apollo-nest-remix-react-example",
+  "npmScope": "nx-apollo-nest-remix-example",
   "affected": {
     "defaultBase": "master"
   },

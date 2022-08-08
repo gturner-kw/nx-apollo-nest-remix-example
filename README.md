@@ -1,94 +1,159 @@
 
 
-# NxApolloNestRemixReactExample
+# Nx Apollo Nest Remix Example
 
 This project was generated using [Nx](https://nx.dev).
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+![NX Framework](https://raw.githubusercontent.com/nrwl/nx/master/images/nx.png)
 
-🔎 **Smart, Fast and Extensible Build System**
+This project was generated using the following steps:
 
-## Adding capabilities to your workspace
+## Create new workspace for NestJs
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+```sh
+❯ npx create-nx-workspace nx-apollo-nest-remix-example
+✔ What to create in the new workspace · nest
+✔ Application name                    · nest-api
+✔ Set up distributed caching using Nx Cloud (It's free and doesn't require registration.) · No
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+ >  NX   Nx is creating your v14.5.4 workspace.
 
-Below are our core plugins:
+   To make sure the command works reliably in all environments, and that the preset is applied correctly,
+   Nx will run "npm install" several times. Please wait.
 
-- [React](https://reactjs.org)
-  - `npm install --save-dev @nrwl/react`
-- Web (no framework frontends)
-  - `npm install --save-dev @nrwl/web`
-- [Angular](https://angular.io)
-  - `npm install --save-dev @nrwl/angular`
-- [Nest](https://nestjs.com)
-  - `npm install --save-dev @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `npm install --save-dev @nrwl/express`
-- [Node](https://nodejs.org)
-  - `npm install --save-dev @nrwl/node`
+✔ Installing dependencies with npm
+⠦ Creating your workspace
+```
 
-There are also many [community plugins](https://nx.dev/community) you could add.
+Install graphql modules:
 
-## Generate an application
+```sh
+npm install @nestjs/graphql @nestjs/apollo apollo-server-express graphql-tools graphql
+```
 
-Run `nx g @nrwl/react:app my-app` to generate an application.
+Create graphql schema types, etc:
 
-> You can use any of the plugins above to generate applications as well.
+```ts
+// apps/nest-api/src/app/schema.graphql
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
+type Set {
+    id: Int!
+    name: String
+    year: Int
+    numParts: Int
+}
 
-## Generate a library
+type Query {
+    allSets: [Set]
+}
 
-Run `nx g @nrwl/react:lib my-lib` to generate a library.
+type Mutation {
+    addSet(name: String, year: String, numParts: Int): Set
+}
+```
 
-> You can also use any of the plugins above to generate libraries as well.
+Now, let's connect graphql to data:
 
-Libraries are shareable across libraries and applications. They can be imported from `@nx-apollo-nest-remix-react-example/mylib`.
+```ts
+// apps/nest-api/src/app/set.resolver.ts
 
-## Development server
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
-Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+export interface SetEntity {
+  id: number;
+  name: string;
+  numParts: number;
+  year: string;
+}
 
-## Code scaffolding
+@Resolver('Set')
+export class SetResolver {
+  private sets: SetEntity[] = [
+    {
+      id: 1,
+      name: 'Voltron',
+      numParts: 2300,
+      year: '2019'
+    },
+    {
+      id: 2,
+      name: 'Ship in a Bottle',
+      numParts: 900,
+      year: '2019'
+    }
+  ];
 
-Run `nx g @nrwl/react:component my-component --project=my-app` to generate a new component.
+  @Query('allSets')
+  getAllSets(): SetEntity[] {
+    return this.sets;
+  }
 
-## Build
+  @Mutation()
+  addSet(
+    @Args('name') name: string,
+    @Args('year') year: string,
+    @Args('numParts') numParts: number
+  ) {
+    const newSet = {
+      id: this.sets.length + 1,
+      name,
+      year,
+      numParts: +numParts
+    };
 
-Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+    this.sets.push(newSet);
 
-## Running unit tests
+    return newSet;
+  }
+}
+```
 
-Run `nx test my-app` to execute the unit tests via [Jest](https://jestjs.io).
+Import graphql into Nest:
 
-Run `nx affected:test` to execute the unit tests affected by a change.
+```ts
+// apps/nest-api/src/app/app.module.ts
 
-## Running end-to-end tests
+import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver } from '@nestjs/apollo';
 
-Run `nx e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { SetResolver } from './set.resolver';
 
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
+@Module({
+  imports: [
+    GraphQLModule.forRoot({
+      driver: ApolloDriver,
+      typePaths: ['./**/*.graphql'],
+    }),
+  ],
+  controllers: [AppController],
+  providers: [AppService, SetResolver],
+})
+export class AppModule {}
+```
 
-## Understand your workspace
+Now, start the api:
 
-Run `nx graph` to see a diagram of the dependencies of your projects.
+`nx start nest-api`
 
-## Further help
+Check out the graphql playground: <http://localhost:3333/graphql>.
 
-Visit the [Nx Documentation](https://nx.dev) to learn more.
+Try out a query and mutation:
 
+```gql
+query allSets {
+  allSets{
+    id,
+    name,
+    numParts
+  }
+}
 
-
-## ☁ Nx Cloud
-
-### Distributed Computation Caching & Distributed Task Execution
-
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
+mutation addSet {
+  addSet(name: "My New Set", numParts: 200, year: "2020") {
+    id
+ }
+}
+```
