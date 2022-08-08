@@ -1,6 +1,8 @@
 {
-  "compileOnSave": false,
+  "extends": "../../tsconfig.base.json",
+  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
   "compilerOptions": {
+    // from base
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
@@ -14,11 +16,21 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    // from remix
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "strict": true,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    // overide from base
     "paths": {
+      "~/*": ["./app/*"],
       "@nx-apollo-nest-remix-example/data-access": [
-        "libs/data-access/src/index.ts"
+        "../../libs/data-access/src/index.ts"
       ]
     }
-  },
-  "exclude": ["node_modules", "tmp"]
+  }
 }
