@@ -1,0 +1,6 @@
+{
+  "name": "@nx-apollo-nest-remix-example/data-access",
+  "version": "0.0.1",
+  "main": "./dist/index.cjs.js",
+  "typings": "./dist/index.d.ts"
+}

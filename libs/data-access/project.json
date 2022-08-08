@@ -1,0 +1,54 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/data-access/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "libs/data-access/dist",
+        "tsConfig": "libs/data-access/tsconfig.lib.json",
+        "project": "libs/data-access/package.json",
+        "entryFile": "libs/data-access/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "libs/data-access/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ],
+        "format": ["cjs"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/data-access/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/data-access"],
+      "options": {
+        "jestConfig": "libs/data-access/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npx graphql-codegen --config libs/data-access/codegen.yml"
+          }
+        ]
+      }
+    }
+  }
+}

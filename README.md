@@ -68,3 +68,51 @@ mutation addSet {
  }
 }
 ```
+
+## Prep Workspace for Remix
+
+```sh
+npm i -D @nrwl/remix
+npx nx g @nrwl/remix:setup
+```
+
+## Create Data-Access Library
+
+Let's create a library to share our graphql schema types.
+
+```sh
+nx g @nrwl/remix:library data-access
+npm i @apollo/react-hooks graphql
+npm i -D @graphql-codegen/cli @graphql-codegen/typescript-operations @graphql-codegen/typescript-react-apollo
+```
+
+Create some data operations: [libs/data-access/src/lib/graphql/operations.graphql](libs/data-access/src/lib/graphql/operations.graphql)
+
+Setup codegen: [libs/data-access/codegen.yml](libs/data-access/codegen.yml)
+
+Setup action to generate code by adding the following `codegen` target to [libs/data-access/project.json](libs/data-access/project.json):
+
+```json
+{
+  ...
+  "targets": {
+    ...
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npx graphql-codegen --config libs/data-access/codegen.yml"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+Now, run the codegen command:
+
+```sh
+nx codegen data-access
+```

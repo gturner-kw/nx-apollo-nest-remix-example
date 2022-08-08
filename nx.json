@@ -24,5 +24,26 @@
       "dependsOn": ["^build"]
     }
   },
-  "defaultProject": "nest-api"
+  "defaultProject": "nest-api",
+  "targetDependencies": {
+    "dev": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ],
+    "start": [
+      {
+        "target": "build",
+        "projects": "self"
+      }
+    ]
+  },
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "babel": true
+      }
+    }
+  }
 }
