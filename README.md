@@ -8,6 +8,12 @@ This project was generated using [Nx](https://nx.dev).
 
 This project was generated using the following steps:
 
+## Install Nx CLI
+
+```sh
+npm install -g nx
+```
+
 ## Create new workspace for NestJs
 
 ```sh
@@ -31,114 +37,19 @@ Install graphql modules:
 npm install @nestjs/graphql @nestjs/apollo apollo-server-express graphql-tools graphql
 ```
 
-Create graphql schema types, etc:
+Create graphql schema types, etc: [apps/nest-api/src/app/schema.graphql](apps/nest-api/src/app/schema.graphql)
 
-```ts
-// apps/nest-api/src/app/schema.graphql
+Now, let's connect graphql to data: [apps/nest-api/src/app/set.resolver.ts](apps/nest-api/src/app/set.resolver.ts)
 
-type Set {
-    id: Int!
-    name: String
-    year: Int
-    numParts: Int
-}
-
-type Query {
-    allSets: [Set]
-}
-
-type Mutation {
-    addSet(name: String, year: String, numParts: Int): Set
-}
-```
-
-Now, let's connect graphql to data:
-
-```ts
-// apps/nest-api/src/app/set.resolver.ts
-
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-
-export interface SetEntity {
-  id: number;
-  name: string;
-  numParts: number;
-  year: string;
-}
-
-@Resolver('Set')
-export class SetResolver {
-  private sets: SetEntity[] = [
-    {
-      id: 1,
-      name: 'Voltron',
-      numParts: 2300,
-      year: '2019'
-    },
-    {
-      id: 2,
-      name: 'Ship in a Bottle',
-      numParts: 900,
-      year: '2019'
-    }
-  ];
-
-  @Query('allSets')
-  getAllSets(): SetEntity[] {
-    return this.sets;
-  }
-
-  @Mutation()
-  addSet(
-    @Args('name') name: string,
-    @Args('year') year: string,
-    @Args('numParts') numParts: number
-  ) {
-    const newSet = {
-      id: this.sets.length + 1,
-      name,
-      year,
-      numParts: +numParts
-    };
-
-    this.sets.push(newSet);
-
-    return newSet;
-  }
-}
-```
-
-Import graphql into Nest:
-
-```ts
-// apps/nest-api/src/app/app.module.ts
-
-import { Module } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver } from '@nestjs/apollo';
-
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { SetResolver } from './set.resolver';
-
-@Module({
-  imports: [
-    GraphQLModule.forRoot({
-      driver: ApolloDriver,
-      typePaths: ['./**/*.graphql'],
-    }),
-  ],
-  controllers: [AppController],
-  providers: [AppService, SetResolver],
-})
-export class AppModule {}
-```
+Lastly, import graphql into Nest: [apps/nest-api/src/app/app.module.ts](apps/nest-api/src/app/app.module.ts)
 
 Now, start the api:
 
-`nx start nest-api`
+```sh
+nx start nest-api
+```
 
-Check out the graphql playground: <http://localhost:3333/graphql>.
+Check out the graphql playground: <http://localhost:3333/graphql>
 
 Try out a query and mutation:
 
