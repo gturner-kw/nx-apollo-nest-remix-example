@@ -4,15 +4,18 @@
 
 This is an example project using Nx to manage Remix and NestJS servers connected by Apollo GraphQL.
 
+Supported by a Cypress e2e test.
+
 This project was generated using [Nx](https://nx.dev).
 
 ![NX Framework](https://raw.githubusercontent.com/nrwl/nx/master/images/nx.png)
 
 And includes the following technologies:
 
-* [Apollo](https://www.apollographql.com/)
+* [Apollo](https://apollographql.com/)
 * [Remix](https://remix.run)
 * [NestJS](https://nestjs.com/)
+* [Cypress](https://cypress.io/)
 
 This project was generated using the following steps:
 
@@ -51,10 +54,10 @@ Now, let's connect graphql to data: [apps/nest-api/src/app/set.resolver.ts](apps
 
 Lastly, import graphql into Nest: [apps/nest-api/src/app/app.module.ts](apps/nest-api/src/app/app.module.ts)
 
-Now, start the api:
+Now, start the api (in watch mode):
 
 ```sh
-nx start nest-api
+nx serve nest-api
 ```
 
 Check out the graphql playground: <http://localhost:3333/graphql>
@@ -159,7 +162,7 @@ Next, connect it to our remix frontend. See [apps/remix-bff/app/entry.client.tsx
 
 Finally, let's merge in our base tsconfig into the one created for remix. See [apps/remix-bff/tsconfig.json](apps/remix-bff/tsconfig.json).
 
-OK, we have enough to launch the server:
+OK, we have enough to launch the server (in watch mode):
 
 ```sh
 nx dev remix-bff
@@ -197,3 +200,26 @@ Now, let's create a route that interacts with the nest-api on the backend. See [
 Then, let's create a route that interacts with the nest api on the frontend. See [apps/remix-bff/app/routes/csr.tsx](apps/remix-bff/app/routes/csr.tsx).
 
 Test these pages out. Check out the network tab and watch how the data is fetched. Note that there's also caching happening, so don't be surprised to see the browser not hit the api on a refresh.
+
+## Create E2E Test App
+
+Generate the e2e app:
+
+```sh
+npm i -D cypress start-server-and-test
+npx nx generate @nrwl/cypress:cypress-project remix-e2e --project=remix-bff
+```
+
+Now, remove the e2e target in [apps/remix-e2e/project.json](apps/remix-e2e/project.json). It won't work for remix, so we'll create our own scripts using start-server-and-test. See [apps/remix-e2e/package.json](apps/remix-e2e/package.json).
+
+Customize the baseUrl to remix. See [apps/remix-e2e/cypress.config.ts](apps/remix-e2e/cypress.config.ts).
+
+Next, make some tests! We'll just write a simple one: [apps/remix-e2e/src/e2e/app.cy.ts](apps/remix-e2e/src/e2e/app.cy.ts).
+
+Now, let's run it.
+
+```sh
+nx e2e remix-e2e
+```
+
+It should create a video output at `/dist/cypress/apps/remix-e2e/videos/app.cy.ts.mp4`.
