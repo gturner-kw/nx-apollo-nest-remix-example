@@ -4,10 +4,6 @@
   "description": "",
   "license": "",
   "scripts": {
-    "build": "npx remix build",
-    "dev": "npx remix dev",
-    "postinstall": "npx remix setup node",
-    "serve": "npx remix-serve build",
     "e2e": "start-server-and-test e2e:serve 3000 e2e:test",
     "e2e:serve": "nx serve remix-bff",
     "e2e:test": "npx cypress run"
