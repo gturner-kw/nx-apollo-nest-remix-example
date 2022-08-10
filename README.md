@@ -223,3 +223,9 @@ nx e2e remix-e2e
 ```
 
 It should create a video output at `/dist/cypress/apps/remix-e2e/videos/app.cy.ts.mp4`.
+
+## TODO
+
+Here's the stuff that isn't working:
+
+* dockerize remix - nx doesn't generate a package.json file in dist - https://github.com/nrwl/nx-labs/issues/31
