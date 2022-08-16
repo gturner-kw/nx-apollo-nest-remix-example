@@ -10,7 +10,14 @@
         "outputPath": "dist/apps/nest-api",
         "main": "apps/nest-api/src/main.ts",
         "tsConfig": "apps/nest-api/tsconfig.app.json",
-        "assets": ["apps/nest-api/src/assets"],
+        "assets": [
+          "apps/nest-api/src/assets",
+          {
+            "glob": "**/*.graphql",
+            "input": "apps/nest-api/src",
+            "output": "."
+          }
+        ],
         "generatePackageJson": true
       },
       "configurations": {
@@ -25,6 +32,17 @@
             }
           ]
         }
+      }
+    },
+    "docker-build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "commands": [
+          {
+            "command": "docker build -f ./apps/nest-api/Dockerfile . --tag nest-api"
+          }
+        ]
       }
     },
     "serve": {

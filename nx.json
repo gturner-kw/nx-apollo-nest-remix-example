@@ -2,13 +2,16 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "nx-apollo-nest-remix-example",
   "affected": {
-    "defaultBase": "master"
+    "defaultBase": "main"
   },
   "implicitDependencies": {
+    "workspace.json": "*",
     "package.json": {
       "dependencies": "*",
       "devDependencies": "*"
     },
+    "tsconfig.base.json": "*",
+    "nx.json": "*",
     ".eslintrc.json": "*"
   },
   "tasksRunnerOptions": {
@@ -22,23 +25,15 @@
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"]
+    },
+    "dev": {
+      "dependsOn": ["^build"]
+    },
+    "start": {
+      "dependsOn": ["^build"]
     }
   },
   "defaultProject": "nest-api",
-  "targetDependencies": {
-    "dev": [
-      {
-        "target": "build",
-        "projects": "dependencies"
-      }
-    ],
-    "start": [
-      {
-        "target": "build",
-        "projects": "self"
-      }
-    ]
-  },
   "generators": {
     "@nrwl/react": {
       "application": {

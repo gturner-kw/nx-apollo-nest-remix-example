@@ -1,5 +1,3 @@
-
-
 # Nx Example Project using Apollo, Remix, and NestJS
 
 This is an example project using Nx to manage Remix and NestJS servers connected by Apollo GraphQL.
@@ -224,8 +222,46 @@ nx e2e remix-e2e
 
 It should create a video output at `/dist/cypress/apps/remix-e2e/videos/app.cy.ts.mp4`.
 
+## Create Remix Executor
+
+Create lib to ...
+
+```sh
+npm i -D @nrwl/nx-plugin
+npx nx generate @nrwl/nx-plugin:plugin workspace-extensions --minimal
+npx nx generate @nrwl/nx-plugin:executor generate-remix-package-json --project=workspace-extensions --description='Executor to generate Remix package.json'
+```
+
+Now, we'll create the executor to generate the Remix package.json. See [libs/workspace-extensions/src/executors/generate-remix-package-json/executor.ts](libs/workspace-extensions/src/executors/generate-remix-package-json/executor.ts).
+
+## Dockerize API
+
+Now, let's build docker images for these apps.
+
+First, we need to add the graphql assets to the project output. See the 'build' target in [apps/nest-api/project.json](apps/nest-api/project.json).
+
+Also, let's create a helper command to build the app and the docker image. See the 'docker-build' target in [apps/nest-api/project.json](apps/nest-api/project.json).
+
+Now, build the api.
+
+```sh
+nx docker-build nest-api
+```
+
+ Note that this command accepts argument overrides. So to tag the image with a version of `0.0.1`, use the following:
+
+ ```sh
+ nx docker-build nest-api --tag nest-api:0.0.1
+ ```
+
+Finally, let's run the docker image:
+
+```sh
+docker run -it --rm -p 4200:4200 --name nest-api nest-api
+```
+
 ## TODO
 
 Here's the stuff that isn't working:
 
-* dockerize remix - nx doesn't generate a package.json file in dist - https://github.com/nrwl/nx-labs/issues/31
+* dockerize remix - nx doesn't generate a package.json file in dist - <https://github.com/nrwl/nx-labs/issues/31>
