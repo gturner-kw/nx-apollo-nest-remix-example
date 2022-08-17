@@ -58,7 +58,7 @@ Now, start the api (in watch mode):
 nx serve nest-api
 ```
 
-Check out the graphql playground: <http://localhost:3333/graphql>
+Check out the graphql playground: <http://localhost:4200/graphql>
 
 Try out a query and mutation:
 

@@ -5,9 +5,10 @@ import { ApolloClient, InMemoryCache } from '@apollo/client';
 const initialState =
   typeof window !== 'undefined' ? window.__INITIAL_STATE__ : {};
 
+// TODO InMemoryCache is just for demo purposes - do not use this in prod
 export function initApolloClient(ssrMode: boolean) {
   return new ApolloClient({
-    uri: 'http://localhost:3333/graphql',
+    uri: process.env.GRAPHQL_URL || 'http://localhost:4200/graphql',
     cache: new InMemoryCache().restore(initialState),
     ssrMode,
   });

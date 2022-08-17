@@ -1,0 +1,12 @@
+.cache
+.dockerignore
+.eslintrc
+.git
+.gitignore
+.husky
+.vscode
+.circleci
+build
+Dockerfile
+docker-compose.yml
+node_modules
