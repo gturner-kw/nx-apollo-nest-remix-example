@@ -5,6 +5,7 @@
     "data-access": "libs/data-access",
     "nest-api": "apps/nest-api",
     "remix-bff": "apps/remix-bff",
-    "remix-e2e": "apps/remix-e2e"
+    "remix-e2e": "apps/remix-e2e",
+    "workspace-extensions": "libs/workspace-extensions"
   }
 }

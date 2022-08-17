@@ -17,6 +17,9 @@
     "paths": {
       "@nx-apollo-nest-remix-example/data-access": [
         "libs/data-access/src/index.ts"
+      ],
+      "@nx-apollo-nest-remix-example/workspace-extensions": [
+        "libs/workspace-extensions/src/index.ts"
       ]
     }
   },

@@ -160,6 +160,8 @@ Next, connect it to our remix frontend. See [apps/remix-bff/app/entry.client.tsx
 
 Finally, let's merge in our base tsconfig into the one created for remix. See [apps/remix-bff/tsconfig.json](apps/remix-bff/tsconfig.json).
 
+Lastly, let's clean up `package.json` by moving the scripts to `project.json` as targets. See [apps/remix-bff/project.json](apps/remix-bff/project.json).
+
 OK, we have enough to launch the server (in watch mode):
 
 ```sh
@@ -222,9 +224,37 @@ nx e2e remix-e2e
 
 It should create a video output at `/dist/cypress/apps/remix-e2e/videos/app.cy.ts.mp4`.
 
-## Create Remix Executor
+## Dockerize API
 
-Create lib to ...
+Now, let's build docker images for these apps.
+
+First, we need to add the graphql assets to the project output. See the 'build' target in [apps/nest-api/project.json](apps/nest-api/project.json).
+
+Also, let's create a helper command to build the app and the docker image. See the 'docker-build' target in [apps/nest-api/project.json](apps/nest-api/project.json).
+
+Now, build the api docker image.
+
+```sh
+docker build -f ./apps/nest-api/Dockerfile . --tag nest-api
+```
+
+Finally, let's run the docker image:
+
+```sh
+docker run -it --rm -p 4200:4200 --name nest-api nest-api
+```
+
+## Dockerize Remix
+
+Now, let's build a docker image for the Remix app.
+
+Some background first. Remix compiles its code using esbuild. Nx doesn't natively support esbuild, so we'll have to use the provided remix build and then copy the results into the docker image.
+
+First, let's create an express server to simplify our deployment. See [apps/remix-bff/server.js](apps/remix-bff/server.js).
+
+Then, let's create a `package.json` template in the project that includes the basics that we need to use to generate our target `package.json`. This file includes the dependencies required for `server.js`. See [apps/remix-bff/package.json](apps/remix-bff/package.json).
+
+Now, we need to generate a `package.json` that combines the root and the project definitions in an Nx style. To do this, we need to create an executor plugin:
 
 ```sh
 npm i -D @nrwl/nx-plugin
@@ -234,34 +264,16 @@ npx nx generate @nrwl/nx-plugin:executor generate-remix-package-json --project=w
 
 Now, we'll create the executor to generate the Remix package.json. See [libs/workspace-extensions/src/executors/generate-remix-package-json/executor.ts](libs/workspace-extensions/src/executors/generate-remix-package-json/executor.ts).
 
-## Dockerize API
+Next, let's add a target to create the `package.json` in the `dist` folder. See the 'package' target in [apps/remix-bff/project.json](apps/remix-bff/project.json).
 
-Now, let's build docker images for these apps.
-
-First, we need to add the graphql assets to the project output. See the 'build' target in [apps/nest-api/project.json](apps/nest-api/project.json).
-
-Also, let's create a helper command to build the app and the docker image. See the 'docker-build' target in [apps/nest-api/project.json](apps/nest-api/project.json).
-
-Now, build the api.
+Now, build the remix app docker image. The following command also builds the app:
 
 ```sh
-nx docker-build nest-api
+docker build -f ./apps/remix-bff/Dockerfile . --tag remix-bff
 ```
-
- Note that this command accepts argument overrides. So to tag the image with a version of `0.0.1`, use the following:
-
- ```sh
- nx docker-build nest-api --tag nest-api:0.0.1
- ```
 
 Finally, let's run the docker image:
 
 ```sh
-docker run -it --rm -p 4200:4200 --name nest-api nest-api
+docker run -it --rm -p 3000:3000 --name remix-bff -e GRAPHQL_URL=http://host.docker.internal:4200/graphql remix-bff
 ```
-
-## TODO
-
-Here's the stuff that isn't working:
-
-* dockerize remix - nx doesn't generate a package.json file in dist - <https://github.com/nrwl/nx-labs/issues/31>

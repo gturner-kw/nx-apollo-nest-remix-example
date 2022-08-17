@@ -34,17 +34,6 @@
         }
       }
     },
-    "docker-build": {
-      "executor": "nx:run-commands",
-      "dependsOn": ["build"],
-      "options": {
-        "commands": [
-          {
-            "command": "docker build -f ./apps/nest-api/Dockerfile . --tag nest-api"
-          }
-        ]
-      }
-    },
     "serve": {
       "executor": "@nrwl/node:node",
       "options": {

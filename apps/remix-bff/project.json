@@ -2,5 +2,59 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/remix-bff",
   "projectType": "application",
+  "targets": {
+    "package": {
+      "executor": "@nx-apollo-nest-remix-example/workspace-extensions:generate-remix-package-json",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/remix-bff"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["package"],
+      "options": {
+        "cwd": "apps/remix-bff",
+        "commands": [
+          {
+            "command": "npx remix build"
+          }
+        ]
+      }
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/remix-bff",
+        "commands": [
+          {
+            "command": "npx remix dev"
+          }
+        ]
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/remix-bff",
+        "commands": [
+          {
+            "command": "npx remix-serve build"
+          }
+        ]
+      }
+    },
+    "postinstall": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/remix-bff",
+        "commands": [
+          {
+            "command": "npx remix setup node"
+          }
+        ]
+      }
+    }
+  },
   "tags": []
 }

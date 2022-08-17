@@ -10,3 +10,6 @@ build
 Dockerfile
 docker-compose.yml
 node_modules
+dist
+/tmp
+/out-tsc

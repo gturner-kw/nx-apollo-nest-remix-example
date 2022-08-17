@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "executors": {
+    "generate-remix-package-json": {
+      "implementation": "./src/executors/generate-remix-package-json/executor",
+      "schema": "./src/executors/generate-remix-package-json/schema.json",
+      "description": "Executor to generate Remix package.json"
+    }
+  }
+}
